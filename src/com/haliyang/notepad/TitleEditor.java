@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.android.notepad;
+package com.haliyang.notepad;
+
+import com.haliyang.notepad.R;
 
 import android.app.Activity;
 import android.content.ContentValues;

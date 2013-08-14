@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.android.notepad;
+package com.haliyang.notepad;
 
 import java.util.Random;
 
-import com.example.android.notepad.NotePad;
+import com.haliyang.notepad.R;
+import com.haliyang.notepad.NotePad;
 
 import android.app.ListActivity;
 import android.content.ClipboardManager;

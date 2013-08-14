@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.android.notepad;
+package com.haliyang.notepad;
 
-import com.example.android.notepad.NotePad;
+import com.haliyang.notepad.NotePad;
 
 import android.content.ClipDescription;
 import android.content.ContentProvider;
