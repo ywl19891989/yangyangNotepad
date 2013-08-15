@@ -67,6 +67,8 @@ public class TitleEditor extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        System.out.println("TitleEditor.onCreate() mUri111:");
 
         // Set the View for this Activity object's UI.
         setContentView(R.layout.title_editor);
@@ -75,6 +77,8 @@ public class TitleEditor extends Activity {
         // title we need to edit.
         mUri = getIntent().getData();
 
+        System.out.println("TitleEditor.onCreate() mUri:" + mUri.toString());
+        
         /*
          * Using the URI passed in with the triggering Intent, gets the note.
          *

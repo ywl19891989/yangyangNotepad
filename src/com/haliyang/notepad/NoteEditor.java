@@ -16,11 +16,13 @@
 
 package com.haliyang.notepad;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.haliyang.notepad.R;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -35,10 +37,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.ContextMenu;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * This Activity handles "editing" a note, where editing is responding to
@@ -51,7 +53,7 @@ import android.widget.EditText;
  * application should use the {@link android.content.AsyncQueryHandler}
  * or {@link android.os.AsyncTask} object to perform operations asynchronously on a separate thread.
  */
-public class NoteEditor extends Activity {
+public class NoteEditor extends SherlockActivity {
     // For logging and debugging purposes
     private static final String TAG = "NoteEditor";
 
@@ -163,7 +165,8 @@ public class NoteEditor extends Activity {
 
             // For an insert or paste action:
         } else if (Intent.ACTION_INSERT.equals(action)
-                || Intent.ACTION_PASTE.equals(action)) {
+//                || Intent.ACTION_PASTE.equals(action)
+                ) {
 
             // Sets the Activity state to INSERT, gets the general note URI, and inserts an
             // empty record in the provider
@@ -215,14 +218,14 @@ public class NoteEditor extends Activity {
             null          // Use the default sort order (modification date, descending)
         );
 
-        // For a paste, initializes the data from clipboard.
-        // (Must be done after mCursor is initialized.)
-        if (Intent.ACTION_PASTE.equals(action)) {
-            // Does the paste
-            performPaste();
-            // Switches the state to EDIT so the title can be modified.
-            mState = STATE_EDIT;
-        }
+//        // For a paste, initializes the data from clipboard.
+//        // (Must be done after mCursor is initialized.)
+//        if (Intent.ACTION_PASTE.equals(action)) {
+//            // Does the paste
+//            performPaste();
+//            // Switches the state to EDIT so the title can be modified.
+//            mState = STATE_EDIT;
+//        }
 
         // Sets the layout for this Activity. See res/layout/note_editor.xml
         setContentView(R.layout.note_editor);
@@ -389,7 +392,7 @@ public class NoteEditor extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate menu from XML resource
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.editor_options_menu, menu);
 
         // Only add extra menu items for a saved note 
@@ -399,6 +402,7 @@ public class NoteEditor extends Activity {
             // as well.  This does a query on the system for any activities that
             // implement the ALTERNATIVE_ACTION for our data, adding a menu item
             // for each one that is found.
+        	System.out.println("NoteEditor.onCreateOptionsMenu() uri: " + mUri.toString());
             Intent intent = new Intent(null, mUri);
             intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
             menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
@@ -441,10 +445,12 @@ public class NoteEditor extends Activity {
             finish();
             break;
         case R.id.menu_delete:
+        	System.out.println("NoteEditor.onOptionsItemSelected() delete");
             deleteNote();
             finish();
             break;
         case R.id.menu_revert:
+        	System.out.println("NoteEditor.onOptionsItemSelected() revert");
             cancelNote();
             break;
         }
@@ -452,70 +458,70 @@ public class NoteEditor extends Activity {
     }
 
 
-    /**
-     * A helper method that replaces the note's data with the contents of the clipboard.
-     */
-    private final void performPaste() {
-
-        // Gets a handle to the Clipboard Manager
-        ClipboardManager clipboard = (ClipboardManager)
-                getSystemService(Context.CLIPBOARD_SERVICE);
-
-        // Gets a content resolver instance
-        ContentResolver cr = getContentResolver();
-
-        // Gets the clipboard data from the clipboard
-        ClipData clip = clipboard.getPrimaryClip();
-        if (clip != null) {
-
-            String text=null;
-            String title=null;
-
-            // Gets the first item from the clipboard data
-            ClipData.Item item = clip.getItemAt(0);
-
-            // Tries to get the item's contents as a URI pointing to a note
-            Uri uri = item.getUri();
-
-            // Tests to see that the item actually is an URI, and that the URI
-            // is a content URI pointing to a provider whose MIME type is the same
-            // as the MIME type supported by the Note pad provider.
-            if (uri != null && NotePad.Notes.CONTENT_ITEM_TYPE.equals(cr.getType(uri))) {
-
-                // The clipboard holds a reference to data with a note MIME type. This copies it.
-                Cursor orig = cr.query(
-                        uri,            // URI for the content provider
-                        PROJECTION,     // Get the columns referred to in the projection
-                        null,           // No selection variables
-                        null,           // No selection variables, so no criteria are needed
-                        null            // Use the default sort order
-                );
-
-                // If the Cursor is not null, and it contains at least one record
-                // (moveToFirst() returns true), then this gets the note data from it.
-                if (orig != null) {
-                    if (orig.moveToFirst()) {
-                        int colNoteIndex = mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE);
-                        int colTitleIndex = mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE);
-                        text = orig.getString(colNoteIndex);
-                        title = orig.getString(colTitleIndex);
-                    }
-
-                    // Closes the cursor.
-                    orig.close();
-                }
-            }
-
-            // If the contents of the clipboard wasn't a reference to a note, then
-            // this converts whatever it is to text.
-            if (text == null) {
-                text = item.coerceToText(this).toString();
-            }
-
-            // Updates the current note with the retrieved title and text.
-            updateNote(text, title);
-        }
-    }
+//    /**
+//     * A helper method that replaces the note's data with the contents of the clipboard.
+//     */
+//    private final void performPaste() {
+//
+//        // Gets a handle to the Clipboard Manager
+//        ClipboardManager clipboard = (ClipboardManager)
+//                getSystemService(Context.CLIPBOARD_SERVICE);
+//
+//        // Gets a content resolver instance
+//        ContentResolver cr = getContentResolver();
+//
+//        // Gets the clipboard data from the clipboard
+//        ClipData clip = clipboard.getPrimaryClip();
+//        if (clip != null) {
+//
+//            String text=null;
+//            String title=null;
+//
+//            // Gets the first item from the clipboard data
+//            ClipData.Item item = clip.getItemAt(0);
+//
+//            // Tries to get the item's contents as a URI pointing to a note
+//            Uri uri = item.getUri();
+//
+//            // Tests to see that the item actually is an URI, and that the URI
+//            // is a content URI pointing to a provider whose MIME type is the same
+//            // as the MIME type supported by the Note pad provider.
+//            if (uri != null && NotePad.Notes.CONTENT_ITEM_TYPE.equals(cr.getType(uri))) {
+//
+//                // The clipboard holds a reference to data with a note MIME type. This copies it.
+//                Cursor orig = cr.query(
+//                        uri,            // URI for the content provider
+//                        PROJECTION,     // Get the columns referred to in the projection
+//                        null,           // No selection variables
+//                        null,           // No selection variables, so no criteria are needed
+//                        null            // Use the default sort order
+//                );
+//
+//                // If the Cursor is not null, and it contains at least one record
+//                // (moveToFirst() returns true), then this gets the note data from it.
+//                if (orig != null) {
+//                    if (orig.moveToFirst()) {
+//                        int colNoteIndex = mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE);
+//                        int colTitleIndex = mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE);
+//                        text = orig.getString(colNoteIndex);
+//                        title = orig.getString(colTitleIndex);
+//                    }
+//
+//                    // Closes the cursor.
+//                    orig.close();
+//                }
+//            }
+//
+//            // If the contents of the clipboard wasn't a reference to a note, then
+//            // this converts whatever it is to text.
+//            if (text == null) {
+//                text = item.coerceToText(this).toString();
+//            }
+//
+//            // Updates the current note with the retrieved title and text.
+//            updateNote(text, title);
+//        }
+//    }
 
 
     /**

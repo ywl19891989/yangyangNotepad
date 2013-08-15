@@ -18,12 +18,6 @@ package com.haliyang.notepad;
 
 import java.util.Random;
 
-import com.haliyang.notepad.R;
-import com.haliyang.notepad.NotePad;
-
-import android.app.ListActivity;
-import android.content.ClipboardManager;
-import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
@@ -34,16 +28,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Displays a list of notes. Will display notes from the {@link Uri}
@@ -55,7 +48,7 @@ import android.widget.SimpleCursorAdapter;
  * application should use the {@link android.content.AsyncQueryHandler} or
  * {@link android.os.AsyncTask} object to perform operations asynchronously on a separate thread.
  */
-public class NotesList extends ListActivity {
+public class NotesList extends SherlockListActivity {
 
     // For logging and debugging
     private static final String TAG = "NotesList";
@@ -173,10 +166,11 @@ public class NotesList extends ListActivity {
      * @param menu A Menu object, to which menu items should be added.
      * @return True, always. The menu should be displayed.
      */
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate menu from XML resource
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.list_options_menu, menu);
 
         // Generate any additional actions that can be performed on the
@@ -196,76 +190,76 @@ public class NotesList extends ListActivity {
         super.onPrepareOptionsMenu(menu);
 
         // The paste menu item is enabled if there is data on the clipboard.
-        ClipboardManager clipboard = (ClipboardManager)
-                getSystemService(Context.CLIPBOARD_SERVICE);
-
-
-        MenuItem mPasteItem = menu.findItem(R.id.menu_paste);
-
-        // If the clipboard contains an item, enables the Paste option on the menu.
-        if (clipboard.hasPrimaryClip()) {
-            mPasteItem.setEnabled(true);
-        } else {
-            // If the clipboard is empty, disables the menu's Paste option.
-            mPasteItem.setEnabled(false);
-        }
-
-        // Gets the number of notes currently being displayed.
-        final boolean haveItems = getListAdapter().getCount() > 0;
-
-        // If there are any notes in the list (which implies that one of
-        // them is selected), then we need to generate the actions that
-        // can be performed on the current selection.  This will be a combination
-        // of our own specific actions along with any extensions that can be
-        // found.
-        if (haveItems) {
-
-            // This is the selected item.
-            Uri uri = ContentUris.withAppendedId(getIntent().getData(), getSelectedItemId());
-
-            // Creates an array of Intents with one element. This will be used to send an Intent
-            // based on the selected menu item.
-            Intent[] specifics = new Intent[1];
-
-            // Sets the Intent in the array to be an EDIT action on the URI of the selected note.
-            specifics[0] = new Intent(Intent.ACTION_EDIT, uri);
-
-            // Creates an array of menu items with one element. This will contain the EDIT option.
-            MenuItem[] items = new MenuItem[1];
-
-            // Creates an Intent with no specific action, using the URI of the selected note.
-            Intent intent = new Intent(null, uri);
-
-            /* Adds the category ALTERNATIVE to the Intent, with the note ID URI as its
-             * data. This prepares the Intent as a place to group alternative options in the
-             * menu.
-             */
-            intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
-
-            /*
-             * Add alternatives to the menu
-             */
-            menu.addIntentOptions(
-                Menu.CATEGORY_ALTERNATIVE,  // Add the Intents as options in the alternatives group.
-                Menu.NONE,                  // A unique item ID is not required.
-                Menu.NONE,                  // The alternatives don't need to be in order.
-                null,                       // The caller's name is not excluded from the group.
-                specifics,                  // These specific options must appear first.
-                intent,                     // These Intent objects map to the options in specifics.
-                Menu.NONE,                  // No flags are required.
-                items                       // The menu items generated from the specifics-to-
-                                            // Intents mapping
-            );
-                // If the Edit menu item exists, adds shortcuts for it.
-                if (items[0] != null) {
-
-                    // Sets the Edit menu item shortcut to numeric "1", letter "e"
-                    items[0].setShortcut('1', 'e');
-                }
-            } else {
-                // If the list is empty, removes any existing alternative actions from the menu
-                menu.removeGroup(Menu.CATEGORY_ALTERNATIVE);
-            }
+//        ClipboardManager clipboard = (ClipboardManager)
+//                getSystemService(Context.CLIPBOARD_SERVICE);
+//
+//
+//        MenuItem mPasteItem = menu.findItem(R.id.menu_paste);
+//
+//        // If the clipboard contains an item, enables the Paste option on the menu.
+//        if (clipboard.hasPrimaryClip()) {
+//            mPasteItem.setEnabled(true);
+//        } else {
+//            // If the clipboard is empty, disables the menu's Paste option.
+//            mPasteItem.setEnabled(false);
+//        }
+//
+//        // Gets the number of notes currently being displayed.
+//        final boolean haveItems = getListAdapter().getCount() > 0;
+//
+//        // If there are any notes in the list (which implies that one of
+//        // them is selected), then we need to generate the actions that
+//        // can be performed on the current selection.  This will be a combination
+//        // of our own specific actions along with any extensions that can be
+//        // found.
+//        if (haveItems) {
+//
+//            // This is the selected item.
+//            Uri uri = ContentUris.withAppendedId(getIntent().getData(), getSelectedItemId());
+//
+//            // Creates an array of Intents with one element. This will be used to send an Intent
+//            // based on the selected menu item.
+//            Intent[] specifics = new Intent[1];
+//
+//            // Sets the Intent in the array to be an EDIT action on the URI of the selected note.
+//            specifics[0] = new Intent(Intent.ACTION_EDIT, uri);
+//
+//            // Creates an array of menu items with one element. This will contain the EDIT option.
+//            MenuItem[] items = new MenuItem[1];
+//
+//            // Creates an Intent with no specific action, using the URI of the selected note.
+//            Intent intent = new Intent(null, uri);
+//
+//            /* Adds the category ALTERNATIVE to the Intent, with the note ID URI as its
+//             * data. This prepares the Intent as a place to group alternative options in the
+//             * menu.
+//             */
+//            intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+//
+//            /*
+//             * Add alternatives to the menu
+//             */
+//            menu.addIntentOptions(
+//                Menu.CATEGORY_ALTERNATIVE,  // Add the Intents as options in the alternatives group.
+//                Menu.NONE,                  // A unique item ID is not required.
+//                Menu.NONE,                  // The alternatives don't need to be in order.
+//                null,                       // The caller's name is not excluded from the group.
+//                specifics,                  // These specific options must appear first.
+//                intent,                     // These Intent objects map to the options in specifics.
+//                Menu.NONE,                  // No flags are required.
+//                items                       // The menu items generated from the specifics-to-
+//                                            // Intents mapping
+//            );
+//                // If the Edit menu item exists, adds shortcuts for it.
+//                if (items[0] != null) {
+//
+//                    // Sets the Edit menu item shortcut to numeric "1", letter "e"
+//                    items[0].setShortcut('1', 'e');
+//                }
+//            } else {
+//                // If the list is empty, removes any existing alternative actions from the menu
+//                menu.removeGroup(Menu.CATEGORY_ALTERNATIVE);
+//            }
 
         // Displays the menu
         return true;
@@ -300,13 +294,13 @@ public class NotesList extends ListActivity {
            * has to have action ACTION_PASTE. No category is set, so DEFAULT is assumed.
            * In effect, this starts the NoteEditor Activity in NotePad.
            */
-          startActivity(new Intent(Intent.ACTION_PASTE, getIntent().getData()));
+//          startActivity(new Intent(Intent.ACTION_PASTE, getIntent().getData()));
           return true;
         default:
             return super.onOptionsItemSelected(item);
         }
     }
-
+    
     /**
      * This method is called when the user context-clicks a note in the list. NotesList registers
      * itself as the handler for context menus in its ListView (this is done in onCreate()).
@@ -320,55 +314,55 @@ public class NotesList extends ListActivity {
      * @param menuInfo Data associated with view.
      * @throws ClassCastException
      */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
-
-        // The data from the menu item.
-        AdapterView.AdapterContextMenuInfo info;
-
-        // Tries to get the position of the item in the ListView that was long-pressed.
-        try {
-            // Casts the incoming data object into the type for AdapterView objects.
-            info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        } catch (ClassCastException e) {
-            // If the menu object can't be cast, logs an error.
-            Log.e(TAG, "bad menuInfo", e);
-            return;
-        }
-
-        /*
-         * Gets the data associated with the item at the selected position. getItem() returns
-         * whatever the backing adapter of the ListView has associated with the item. In NotesList,
-         * the adapter associated all of the data for a note with its list item. As a result,
-         * getItem() returns that data as a Cursor.
-         */
-        Cursor cursor = (Cursor) getListAdapter().getItem(info.position);
-
-        // If the cursor is empty, then for some reason the adapter can't get the data from the
-        // provider, so returns null to the caller.
-        if (cursor == null) {
-            // For some reason the requested item isn't available, do nothing
-            return;
-        }
-
-        // Inflate menu from XML resource
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.list_context_menu, menu);
-
-        // Sets the menu header to be the title of the selected note.
-        menu.setHeaderTitle(cursor.getString(COLUMN_INDEX_TITLE));
-
-        // Append to the
-        // menu items for any other activities that can do stuff with it
-        // as well.  This does a query on the system for any activities that
-        // implement the ALTERNATIVE_ACTION for our data, adding a menu item
-        // for each one that is found.
-        Intent intent = new Intent(null, Uri.withAppendedPath(getIntent().getData(), 
-                                        Integer.toString((int) info.id) ));
-        intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
-        menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
-                new ComponentName(this, NotesList.class), null, intent, 0, null);
-    }
+//    @Override
+//    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
+//
+//        // The data from the menu item.
+//        AdapterView.AdapterContextMenuInfo info;
+//
+//        // Tries to get the position of the item in the ListView that was long-pressed.
+//        try {
+//            // Casts the incoming data object into the type for AdapterView objects.
+//            info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+//        } catch (ClassCastException e) {
+//            // If the menu object can't be cast, logs an error.
+//            Log.e(TAG, "bad menuInfo", e);
+//            return;
+//        }
+//
+//        /*
+//         * Gets the data associated with the item at the selected position. getItem() returns
+//         * whatever the backing adapter of the ListView has associated with the item. In NotesList,
+//         * the adapter associated all of the data for a note with its list item. As a result,
+//         * getItem() returns that data as a Cursor.
+//         */
+//        Cursor cursor = (Cursor) getListAdapter().getItem(info.position);
+//
+//        // If the cursor is empty, then for some reason the adapter can't get the data from the
+//        // provider, so returns null to the caller.
+//        if (cursor == null) {
+//            // For some reason the requested item isn't available, do nothing
+//            return;
+//        }
+//
+//        // Inflate menu from XML resource
+//        MenuInflater inflater = getSupportMenuInflater();
+//        inflater.inflate(R.menu.list_context_menu, menu);
+//
+//        // Sets the menu header to be the title of the selected note.
+//        menu.setHeaderTitle(cursor.getString(COLUMN_INDEX_TITLE));
+//
+//        // Append to the
+//        // menu items for any other activities that can do stuff with it
+//        // as well.  This does a query on the system for any activities that
+//        // implement the ALTERNATIVE_ACTION for our data, adding a menu item
+//        // for each one that is found.
+//        Intent intent = new Intent(null, Uri.withAppendedPath(getIntent().getData(), 
+//                                        Integer.toString((int) info.id) ));
+//        intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+//        menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
+//                new ComponentName(this, NotesList.class), null, intent, 0, null);
+//    }
 
     /**
      * This method is called when the user selects an item from the context menu
@@ -380,79 +374,79 @@ public class NotesList extends ListActivity {
      * which triggers the default handling of the item.
      * @throws ClassCastException
      */
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        // The data from the menu item.
-        AdapterView.AdapterContextMenuInfo info;
-
-        /*
-         * Gets the extra info from the menu item. When an note in the Notes list is long-pressed, a
-         * context menu appears. The menu items for the menu automatically get the data
-         * associated with the note that was long-pressed. The data comes from the provider that
-         * backs the list.
-         *
-         * The note's data is passed to the context menu creation routine in a ContextMenuInfo
-         * object.
-         *
-         * When one of the context menu items is clicked, the same data is passed, along with the
-         * note ID, to onContextItemSelected() via the item parameter.
-         */
-        try {
-            // Casts the data object in the item into the type for AdapterView objects.
-            info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        } catch (ClassCastException e) {
-
-            // If the object can't be cast, logs an error
-            Log.e(TAG, "bad menuInfo", e);
-
-            // Triggers default processing of the menu item.
-            return false;
-        }
-        // Appends the selected note's ID to the URI sent with the incoming Intent.
-        Uri noteUri = ContentUris.withAppendedId(getIntent().getData(), info.id);
-
-        /*
-         * Gets the menu item's ID and compares it to known actions.
-         */
-        switch (item.getItemId()) {
-        case R.id.context_open:
-            // Launch activity to view/edit the currently selected item
-            startActivity(new Intent(Intent.ACTION_EDIT, noteUri));
-            return true;
-
-        case R.id.context_copy:
-            // Gets a handle to the clipboard service.
-            ClipboardManager clipboard = (ClipboardManager)
-                    getSystemService(Context.CLIPBOARD_SERVICE);
-  
-            // Copies the notes URI to the clipboard. In effect, this copies the note itself
-            clipboard.setPrimaryClip(ClipData.newUri(   // new clipboard item holding a URI
-                    getContentResolver(),               // resolver to retrieve URI info
-                    "Note",                             // label for the clip
-                    noteUri)                            // the URI
-            );
-  
-            // Returns to the caller and skips further processing.
-            return true;
-
-        case R.id.context_delete:
-  
-            // Deletes the note from the provider by passing in a URI in note ID format.
-            // Please see the introductory note about performing provider operations on the
-            // UI thread.
-            getContentResolver().delete(
-                noteUri,  // The URI of the provider
-                null,     // No where clause is needed, since only a single note ID is being
-                          // passed in.
-                null      // No where clause is used, so no where arguments are needed.
-            );
-  
-            // Returns to the caller and skips further processing.
-            return true;
-        default:
-            return super.onContextItemSelected(item);
-        }
-    }
+//    public boolean onContextItemSelected(MenuItem item) {
+//        // The data from the menu item.
+//        AdapterView.AdapterContextMenuInfo info;
+//
+//        /*
+//         * Gets the extra info from the menu item. When an note in the Notes list is long-pressed, a
+//         * context menu appears. The menu items for the menu automatically get the data
+//         * associated with the note that was long-pressed. The data comes from the provider that
+//         * backs the list.
+//         *
+//         * The note's data is passed to the context menu creation routine in a ContextMenuInfo
+//         * object.
+//         *
+//         * When one of the context menu items is clicked, the same data is passed, along with the
+//         * note ID, to onContextItemSelected() via the item parameter.
+//         */
+//        try {
+//            // Casts the data object in the item into the type for AdapterView objects.
+//            info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+//        } catch (ClassCastException e) {
+//
+//            // If the object can't be cast, logs an error
+//            Log.e(TAG, "bad menuInfo", e);
+//
+//            // Triggers default processing of the menu item.
+//            return false;
+//        }
+//        // Appends the selected note's ID to the URI sent with the incoming Intent.
+//        Uri noteUri = ContentUris.withAppendedId(getIntent().getData(), info.id);
+//
+//        /*
+//         * Gets the menu item's ID and compares it to known actions.
+//         */
+//        switch (item.getItemId()) {
+//        case R.id.context_open:
+//            // Launch activity to view/edit the currently selected item
+//            startActivity(new Intent(Intent.ACTION_EDIT, noteUri));
+//            return true;
+//
+//        case R.id.context_copy:
+//            // Gets a handle to the clipboard service.
+//            ClipboardManager clipboard = (ClipboardManager)
+//                    getSystemService(Context.CLIPBOARD_SERVICE);
+//  
+//            // Copies the notes URI to the clipboard. In effect, this copies the note itself
+//            clipboard.setPrimaryClip(ClipData.newUri(   // new clipboard item holding a URI
+//                    getContentResolver(),               // resolver to retrieve URI info
+//                    "Note",                             // label for the clip
+//                    noteUri)                            // the URI
+//            );
+//  
+//            // Returns to the caller and skips further processing.
+//            return true;
+//
+//        case R.id.context_delete:
+//  
+//            // Deletes the note from the provider by passing in a URI in note ID format.
+//            // Please see the introductory note about performing provider operations on the
+//            // UI thread.
+//            getContentResolver().delete(
+//                noteUri,  // The URI of the provider
+//                null,     // No where clause is needed, since only a single note ID is being
+//                          // passed in.
+//                null      // No where clause is used, so no where arguments are needed.
+//            );
+//  
+//            // Returns to the caller and skips further processing.
+//            return true;
+//        default:
+//            return true;
+////            return super.onContextItemSelected(item);
+//        }
+//    }
 
     /**
      * This method is called when the user clicks a note in the displayed list.

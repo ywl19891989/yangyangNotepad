@@ -26,7 +26,7 @@ import android.provider.BaseColumns;
  * URIs. A well-written client depends only on the constants in the contract.
  */
 public final class NotePad {
-    public static final String AUTHORITY = "com.google.provider.NotePad";
+    public static final String AUTHORITY = "com.haliyang.provider.NotePad";
 
     // This class cannot be instantiated
     private NotePad() {

@@ -34,8 +34,8 @@
     <string name="button_ok">OK</string>
     <string name="text_title">Title:</string>
 
-    <string name="resolve_edit">Edit note</string>
-    <string name="resolve_title">Edit title</string>
+    <string name="resolve_edit">Edit Note</string>
+    <string name="resolve_title">Edit Title</string>
 
     <string name="error_title">Error</string>
     <string name="error_message">Error loading note</string>
