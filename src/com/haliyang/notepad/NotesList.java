@@ -94,8 +94,8 @@ public class NotesList extends SherlockListActivity {
          */
         getListView().setOnCreateContextMenuListener(this);
         
-        int resIds[] = {R.drawable.bg_01, R.drawable.bg_02, R.drawable.bg_03, R.drawable.bg_04, R.drawable.bg_05, R.drawable.bg_06, R.drawable.bg_07, R.drawable.bg_08};
-        int itemResIds[] = {R.layout.noteslist_item2, R.layout.noteslist_item, R.layout.noteslist_item, R.layout.noteslist_item2, R.layout.noteslist_item2, R.layout.noteslist_item2, R.layout.noteslist_item, R.layout.noteslist_item};
+        int resIds[] = {R.drawable.bg_01, R.drawable.bg_02, R.drawable.bg_03, R.drawable.bg_04, R.drawable.bg_05};
+        int itemResIds[] = {R.layout.noteslist_item2, R.layout.noteslist_item, R.layout.noteslist_item, R.layout.noteslist_item2, R.layout.noteslist_item2};
 
         Random rand = new Random();
         
