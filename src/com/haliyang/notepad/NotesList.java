@@ -94,14 +94,14 @@ public class NotesList extends SherlockListActivity {
          */
         getListView().setOnCreateContextMenuListener(this);
         
-        int resIds[] = {R.drawable.bg_01, R.drawable.bg_02, R.drawable.bg_03, R.drawable.bg_04, R.drawable.bg_05};
-        int itemResIds[] = {R.layout.noteslist_item2, R.layout.noteslist_item, R.layout.noteslist_item, R.layout.noteslist_item2, R.layout.noteslist_item2};
+        int resIds[] = {R.drawable.bg_01, R.drawable.bg_03, R.drawable.bg_04, R.drawable.bg_05};
+        int itemResIds[] = {R.layout.noteslist_item, R.layout.noteslist_item, R.layout.noteslist_item2, R.layout.noteslist_item2};
 
         Random rand = new Random();
         
         int randomIndex = rand.nextInt(resIds.length);
         
-        if(randomIndex == 0 || randomIndex == 4 || randomIndex == 5){
+        if(randomIndex == 2 || randomIndex == 3){
         	getListView().setDivider(new ColorDrawable(Color.BLACK));
         }else{
         	getListView().setDivider(new ColorDrawable(Color.WHITE));
